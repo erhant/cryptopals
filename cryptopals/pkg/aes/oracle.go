@@ -1,8 +1,7 @@
-package set2
+package aes
 
 import (
 	"cryptopals/internal/common"
-	"cryptopals/pkg/set1"
 	"fmt"
 )
 
@@ -11,7 +10,7 @@ import (
 // and then encrypts the entire thing. Half of the time,
 // it will use ECB mode, otherwise CBC.
 func EncryptionOracle(pt []byte) ([]byte, bool, error) {
-	const size = 16
+	const size = 16 // TODO: take parameter
 	// create random 16-byte key
 	key, err := common.RandBytes(size)
 	if err != nil {
@@ -37,7 +36,7 @@ func EncryptionOracle(pt []byte) ([]byte, bool, error) {
 	useECB := common.RandBool()
 	if useECB {
 		// encrypt with ECB
-		ct, _, err = set1.AES128ECBEncrypt(pt, key)
+		ct, err = ECBEncrypt(pt, key, 16)
 		if err != nil {
 			return nil, false, err
 		}
@@ -48,7 +47,7 @@ func EncryptionOracle(pt []byte) ([]byte, bool, error) {
 			return nil, false, err
 		}
 		// encrypt with CBC
-		ct, _, err = AES128CBCEncrypt(pt, iv, key)
+		ct, _, err = CBCEncrypt(pt, iv, key, 16)
 		if err != nil {
 			return nil, false, err
 		}
@@ -61,6 +60,7 @@ func EncryptionOracle(pt []byte) ([]byte, bool, error) {
 // the given ciphertext was encrypted using ECB. Returning
 // false means that ciphertext was encrypted using CBC.
 func DetectionOracle(ct []byte) bool {
+	// TODO: take parameter
 	const size = 16
 	// similar to previous challenge, try to check for repeating blocks
 	s := common.RepeatingBlocks(ct, size)

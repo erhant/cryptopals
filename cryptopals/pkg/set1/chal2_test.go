@@ -1,7 +1,7 @@
 package set1_test
 
 import (
-	"cryptopals/pkg/set1"
+	"cryptopals/pkg/xor"
 	"encoding/hex"
 	"testing"
 )
@@ -24,7 +24,7 @@ func TestChal2(t *testing.T) {
 		return
 	}
 
-	output, err := set1.XOR(aD, bD)
+	output, err := xor.XOR(aD, bD)
 	if err2 != nil {
 		t.Error(err)
 		return

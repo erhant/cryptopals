@@ -2,9 +2,11 @@ package set1_test
 
 import (
 	"cryptopals/internal/constants"
-	"cryptopals/pkg/set1"
+	"cryptopals/pkg/aes"
 	"encoding/base64"
+	"fmt"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -17,20 +19,39 @@ func TestChal7(t *testing.T) {
 	}
 
 	// decode
-	ct := make([]byte, base64.StdEncoding.DecodedLen(len(fileb64)))
-	base64.StdEncoding.Decode(ct, fileb64)
-
-	// decrypt
-	key := []byte("YELLOW SUBMARINE")
-	pt, _, err := set1.AES128ECBDecrypt(ct, key)
+	ct, err := base64.StdEncoding.DecodeString(string(fileb64))
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
+	// decrypt
+	key := []byte("YELLOW SUBMARINE")
+	ptBytes, err := aes.ECBDecrypt(ct, key, 16)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	pt := string(ptBytes)
+
+	// trim EOT, new-line, space
+	pt = strings.Trim(pt, "\x04\n ")
+
+	fmt.Println(pt)
+
+	// check prefix match
 	expectedPrefix := "I'm back and I'm ringin' the bell"
-	if string(pt)[:len(expectedPrefix)] != expectedPrefix {
-		t.Error(constants.ErrWrongResult, string(pt)[:len(expectedPrefix)])
+	ptPrefix := pt[:len(expectedPrefix)]
+	if ptPrefix != expectedPrefix {
+		t.Error(constants.ErrWrongResult, ptPrefix)
+		return
+	}
+
+	// check suffix match
+	expectedSuffix := "Play that funky music"
+	ptSuffix := pt[len(pt)-len(expectedSuffix):]
+	if ptSuffix != expectedSuffix {
+		t.Error(constants.ErrWrongResult, ptSuffix)
 		return
 	}
 }

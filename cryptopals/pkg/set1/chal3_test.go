@@ -1,7 +1,7 @@
 package set1_test
 
 import (
-	"cryptopals/pkg/set1"
+	"cryptopals/pkg/xor"
 	"encoding/hex"
 	"testing"
 )
@@ -19,7 +19,7 @@ func TestChal3(t *testing.T) {
 	}
 
 	// crack
-	res, _, _, err := set1.SingleByteXORDecipher(ctDec)
+	res, _, _, err := xor.SingleByteXORDecipher(ctDec)
 	if err != nil {
 		t.Error(err)
 		return

@@ -1,0 +1,19 @@
+{
+  // https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/main/images/folderIcons.png
+  "material-icon-theme.folders.associations": {
+    "set1": "Log",
+    "set2": "Log",
+    "set3": "Log",
+    "set4": "Log",
+    "set5": "Log",
+    "set6": "Log",
+    "set7": "Log",
+    "set8": "Log",
+    "set9": "Log",
+    "internal": "Export",
+    "aes": "Keys",
+    "b64": "Generator",
+    "pkcs7": "Constant",
+    "xor": "Expo"
+  }
+}

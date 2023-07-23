@@ -1,4 +1,4 @@
-package set1
+package xor
 
 import (
 	"cryptopals/internal/common"

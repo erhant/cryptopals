@@ -2,7 +2,7 @@ package set1_test
 
 import (
 	"bufio"
-	"cryptopals/pkg/set1"
+	"cryptopals/pkg/xor"
 	"encoding/hex"
 	"math"
 	"os"
@@ -29,20 +29,19 @@ func TestChal4(t *testing.T) {
 		// decode hex
 		len := hex.DecodedLen(len(ct))
 		ctDec := make([]byte, len)
-		_, err := hex.Decode(ctDec, ct)
-		if err != nil {
+		if _, err := hex.Decode(ctDec, ct); err != nil {
 			t.Error(err)
 			return
 		}
 
 		// crack line
-		pt, _, s, err := set1.SingleByteXORDecipher(ctDec)
+		pt, _, s, err := xor.SingleByteXORDecipher(ctDec)
 		if err != nil {
 			t.Error(err)
 			return
 		}
 
-		// update score
+		// update score (cost)
 		if s <= score {
 			ans = pt
 			score = s

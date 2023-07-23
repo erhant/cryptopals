@@ -1,13 +1,16 @@
-package set2
+package aes
 
 import (
 	"crypto/aes"
 	"cryptopals/internal/constants"
-	"cryptopals/pkg/set1"
+	"cryptopals/pkg/pkcs7"
+	"cryptopals/pkg/xor"
 )
 
-func AES128CBCEncrypt(pt, iv, key []byte) ([]byte, int, error) {
-	const size = 16
+// AES encryption with CBC (Cipher Block Chaining)
+//
+// Size must be 16, 24 or 32 for AES-128, AES-192 or AES-256 respectively.
+func CBCEncrypt(pt, iv, key []byte, size int) ([]byte, int, error) {
 	// create block cipher
 	if len(key) != size {
 		return nil, 0, constants.ErrWrongKeySize
@@ -33,7 +36,7 @@ func AES128CBCEncrypt(pt, iv, key []byte) ([]byte, int, error) {
 	// for i := padding; i > 0; i-- {
 	// 	pt = append(pt, padding)
 	// }
-	pt = PadPKCS7(pt, size)
+	pt = pkcs7.Pad(pt, size)
 
 	// encrypt
 	ct := make([]byte, len(pt))
@@ -42,7 +45,7 @@ func AES128CBCEncrypt(pt, iv, key []byte) ([]byte, int, error) {
 	for be := size; be <= len(ct); be += size {
 		bs := be - size
 		// xor with prev
-		xor, err := set1.XOR(pt[bs:be], prev)
+		xor, err := xor.XOR(pt[bs:be], prev)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -57,8 +60,10 @@ func AES128CBCEncrypt(pt, iv, key []byte) ([]byte, int, error) {
 	// return ct[:len(pt)-int(padding)], int(padding), nil
 }
 
-func AES128CBCDecrypt(ct, iv, key []byte) ([]byte, int, error) {
-	const size = 16
+// AES decryption with CBC (Cipher Block Chaining)
+//
+// Size must be 16, 24 or 32 for AES-128, AES-192 or AES-256 respectively.
+func CBCDecrypt(ct, iv, key []byte, size int) ([]byte, int, error) {
 	// create block cipher
 	if len(key) != size {
 		return nil, 0, constants.ErrWrongKeySize
@@ -80,7 +85,7 @@ func AES128CBCDecrypt(ct, iv, key []byte) ([]byte, int, error) {
 	// 	pad := make([]byte, padding)
 	// 	ct = append(ct, pad...)
 	// }
-	ct = PadPKCS7(ct, size)
+	ct = pkcs7.Pad(ct, size)
 
 	// decrypt
 	pt := make([]byte, len(ct))
@@ -91,7 +96,7 @@ func AES128CBCDecrypt(ct, iv, key []byte) ([]byte, int, error) {
 		// decrypt
 		cipher.Decrypt(pt[bs:be], ct[bs:be])
 		// xor with prev
-		xor, err := set1.XOR(pt[bs:be], prev)
+		xor, err := xor.XOR(pt[bs:be], prev)
 		if err != nil {
 			return nil, 0, err
 		}

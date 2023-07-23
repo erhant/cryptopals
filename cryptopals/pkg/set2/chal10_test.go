@@ -3,7 +3,7 @@ package set2_test
 import (
 	"bytes"
 	"cryptopals/internal/constants"
-	"cryptopals/pkg/set2"
+	"cryptopals/pkg/aes"
 	"encoding/base64"
 	"os"
 	"testing"
@@ -24,7 +24,7 @@ func TestChal10(t *testing.T) {
 	iv := make([]byte, 16) // 128-bit all zeros
 
 	// decrypt
-	pt, _, err := set2.AES128CBCDecrypt(ct, iv, key)
+	pt, _, err := aes.CBCDecrypt(ct, iv, key, 16)
 	if err != nil {
 		t.Error(err)
 		return
@@ -40,12 +40,12 @@ func TestChal10(t *testing.T) {
 	// custom test
 	{
 		myPt := []byte("today is a good day")
-		myCt, _, err := set2.AES128CBCEncrypt(myPt, iv, key)
+		myCt, _, err := aes.CBCEncrypt(myPt, iv, key, 16)
 		if err != nil {
 			t.Error(err)
 			return
 		}
-		myPt2, _, err := set2.AES128CBCDecrypt(myCt, iv, key)
+		myPt2, _, err := aes.CBCDecrypt(myCt, iv, key, 16)
 		if err != nil {
 			t.Error(err)
 			return

@@ -3,19 +3,19 @@ package set2_test
 import (
 	"bytes"
 	"cryptopals/internal/constants"
-	"cryptopals/pkg/set2"
+	"cryptopals/pkg/pkcs7"
 	"testing"
 )
 
 func TestChal9(t *testing.T) {
 	buf := []byte("YELLOW SUBMARINE")
-	paddedBuf := set2.PadPKCS7(buf, 20)                     // pad to 20 bytes
-	unpaddedBuf, padding, err := set2.UnpadPKCS7(paddedBuf) // unpad
+	paddedBuf := pkcs7.Pad(buf, 20)            // pad to 20 bytes
+	unpaddedBuf, err := pkcs7.Unpad(paddedBuf) // unpad
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	if padding != 4 || !bytes.Equal(buf, unpaddedBuf) {
+	if !bytes.Equal(buf, unpaddedBuf) {
 		t.Error(constants.ErrWrongResult)
 		return
 	}
