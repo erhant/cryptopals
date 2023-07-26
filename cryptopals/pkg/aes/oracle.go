@@ -47,7 +47,7 @@ func EncryptionOracle(pt []byte) ([]byte, bool, error) {
 			return nil, false, err
 		}
 		// encrypt with CBC
-		ct, _, err = CBCEncrypt(pt, iv, key, 16)
+		ct, err = CBCEncrypt(pt, iv, key, 16)
 		if err != nil {
 			return nil, false, err
 		}

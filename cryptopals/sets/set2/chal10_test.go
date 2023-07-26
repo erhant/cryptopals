@@ -9,6 +9,30 @@ import (
 	"testing"
 )
 
+func TestCBC(t *testing.T) {
+	size := 16
+	key := []byte("YELLOW SUBMARINE") // 16-byte key
+	iv := make([]byte, size)          // 16-byte all zeros
+	pt := []byte("BLUE EYED FISHES")  // 16-byte plaintext
+
+	ct, err := aes.CBCEncrypt(pt, iv, key, size)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	ptTest, err := aes.CBCDecrypt(ct, iv, key, size)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	t.Log(string(ptTest))
+	if !bytes.Equal(pt, ptTest) {
+		t.Error(constants.ErrWrongResult)
+	}
+}
+
 func TestChal10(t *testing.T) {
 	// read file (base64 encoded)
 	fileb64, err := os.ReadFile("../../res/set2/10.txt")
@@ -24,7 +48,7 @@ func TestChal10(t *testing.T) {
 	iv := make([]byte, 16) // 128-bit all zeros
 
 	// decrypt
-	pt, _, err := aes.CBCDecrypt(ct, iv, key, 16)
+	pt, err := aes.CBCDecrypt(ct, iv, key, 16)
 	if err != nil {
 		t.Error(err)
 		return
@@ -37,22 +61,4 @@ func TestChal10(t *testing.T) {
 	}
 	t.Log("PT:", string(pt))
 
-	// custom test
-	{
-		myPt := []byte("today is a good day")
-		myCt, _, err := aes.CBCEncrypt(myPt, iv, key, 16)
-		if err != nil {
-			t.Error(err)
-			return
-		}
-		myPt2, _, err := aes.CBCDecrypt(myCt, iv, key, 16)
-		if err != nil {
-			t.Error(err)
-			return
-		}
-		t.Log("PT1:", string(myPt), "\tPT2:", string(myPt2), "\n")
-		if !bytes.Equal(myPt, myPt2) {
-			t.Error(constants.ErrWrongResult)
-		}
-	}
 }
