@@ -1,3 +1,0 @@
-# Ingonyama CTF
-
-todo
