@@ -2,6 +2,16 @@
 
 This repository has my [cryptopals](https://cryptopals.com/) solutions, which are a set of cryptography-related programming challenges. Each challenge is run as a test, stored under `sets/setN/chalM_test.go` for some set `N` and challenge `M`. The rest of the codes are stored under `pkg` and `internal`.
 
+To run a specific set:
+
+```sh
+# N for set number
+go test ./sets/setN
+
+# e.g. running set 1 with verbose flag
+go test ./sets/set1 -v
+```
+
 ## Challenges
 
 - [x] [Set 1](./sets/set1/): [Basics](https://cryptopals.com/sets/1)
@@ -13,8 +23,9 @@ This repository has my [cryptopals](https://cryptopals.com/) solutions, which ar
   - [x] [Challenge 6](./sets/set1/chal6_test.go): [Break repeating-key XOR](https://cryptopals.com/sets/1/challenges/6) there is a bug here?
   - [x] [Challenge 7](./sets/set1/chal7_test.go): [AES in ECB mode](https://cryptopals.com/sets/1/challenges/7)
   - [x] [Challenge 8](./sets/set1/chal8_test.go): [Detect AES in ECB mode](https://cryptopals.com/sets/1/challenges/8)
-- [Set 2](./sets/set2/): [Block crypto](https://cryptopals.com/sets/2)
-  - [Challenge 9](./sets/set2/chal9_test.go): [Implement PKCS#7 padding](https://cryptopals.com/sets/2/challenges/9)
-  - [Challenge 10](./sets/set2/chal10_test.go): [Implement CBC mode](https://cryptopals.com/sets/2/challenges/10)
-  - [Challenge 11](./sets/set2/chal11_test.go): [An ECB/CBC detection oracle](https://cryptopals.com/sets/2/challenges/11)
-  - _more coming soon..._
+- [ ] [Set 2](./sets/set2/): [Block crypto](https://cryptopals.com/sets/2)
+  - [x] [Challenge 9](./sets/set2/chal9_test.go): [Implement PKCS#7 padding](https://cryptopals.com/sets/2/challenges/9)
+  - [x] [Challenge 10](./sets/set2/chal10_test.go): [Implement CBC mode](https://cryptopals.com/sets/2/challenges/10)
+  - [ ] [Challenge 11](./sets/set2/chal11_test.go): [An ECB/CBC detection oracle](https://cryptopals.com/sets/2/challenges/11)
+  - ...
+  - [x] [Challenge 15](./sets/set2/chal15_test.go): [PKCS#7 padding validation](https://cryptopals.com/sets/2/challenges/15)

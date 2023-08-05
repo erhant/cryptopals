@@ -24,9 +24,12 @@ func TestChal11(t *testing.T) {
 		}
 		// returns true if ciphertext is detected to be encrypted with ECB
 		detectedECB := aes.DetectionOracle(ct)
-		// if useECB != detectedECB {
-		t.Log("USED:", useECB, "\tDETECTED:", detectedECB)
-		// }
-		// t.Log("CT:", ct, "\tECB:", useECB)
+
+		// TODO
+		if useECB != detectedECB {
+			t.Log("USED:", useECB, "\tDETECTED:", detectedECB)
+			t.Log("CT:", ct, "\tECB:", useECB)
+			t.Fail()
+		}
 	}
 }
