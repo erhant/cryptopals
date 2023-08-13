@@ -11,25 +11,26 @@ import (
 
 func TestCBC(t *testing.T) {
 	size := 16
+
 	key := []byte("YELLOW SUBMARINE") // 16-byte key
 	iv := make([]byte, size)          // 16-byte all zeros
 	pt := []byte("BLUE EYED FISHES")  // 16-byte plaintext
 
 	ct, err := aes.CBCEncrypt(pt, iv, key, size)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 		return
 	}
 
 	ptTest, err := aes.CBCDecrypt(ct, iv, key, size)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 		return
 	}
 
 	t.Log(string(ptTest))
 	if !bytes.Equal(pt, ptTest) {
-		t.Error(constants.ErrWrongResult)
+		t.Fatal(constants.ErrWrongResult)
 	}
 }
 
@@ -37,8 +38,7 @@ func TestChal10(t *testing.T) {
 	// read file (base64 encoded)
 	fileb64, err := os.ReadFile("../../res/set2/10.txt")
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 
 	// decode
@@ -50,15 +50,14 @@ func TestChal10(t *testing.T) {
 	// decrypt
 	pt, err := aes.CBCDecrypt(ct, iv, key, 16)
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 
 	expectedPrefix := "I'm back and I'm ringin' the bell"
 	if string(pt)[:len(expectedPrefix)] != expectedPrefix {
-		t.Error(constants.ErrWrongResult)
-		return
+		t.Fatal(constants.ErrWrongResult)
 	}
-	t.Log("PT:", string(pt))
+
+	t.Log(string(pt))
 
 }

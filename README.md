@@ -12,6 +12,16 @@ go test ./sets/setN
 go test ./sets/set1 -v
 ```
 
+To run a specific challenge, similarly:
+
+```sh
+go test ./sets/setN/chalM_test.go -v
+```
+
+## TODO
+
+- Add `internal/testing` utilities that prints expected / received kind of errors.
+
 ## Challenges
 
 - [x] [Set 1](./sets/set1/): [Basics](https://cryptopals.com/sets/1)

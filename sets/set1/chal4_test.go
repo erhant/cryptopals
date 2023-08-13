@@ -9,9 +9,9 @@ import (
 	"testing"
 )
 
-func TestChal4(t *testing.T) {
+func TestChal4_SingleByteXOR_Detect(t *testing.T) {
 	t.Skip("skip: test is a bit long")
-	// open file
+
 	file, err := os.Open("../../res/set1/4.txt")
 	if err != nil {
 		t.Error(err)
@@ -27,18 +27,15 @@ func TestChal4(t *testing.T) {
 		ct := scanner.Bytes()
 
 		// decode hex
-		len := hex.DecodedLen(len(ct))
-		ctDec := make([]byte, len)
-		if _, err := hex.Decode(ctDec, ct); err != nil {
-			t.Error(err)
-			return
+		ctDec, err := hex.DecodeString(string(ct))
+		if err != nil {
+			t.Fatal(err)
 		}
 
 		// crack line
 		pt, _, s, err := xor.SingleByteXORDecipher(ctDec)
 		if err != nil {
-			t.Error(err)
-			return
+			t.Fatal(err)
 		}
 
 		// update score (cost)
@@ -50,13 +47,11 @@ func TestChal4(t *testing.T) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 
 	expected := "Now that the party is jumping\n"
 	if string(ans) != expected {
-		t.Errorf("Wrong output.\nHave: %s\nNeed: %s\n", string(ans), expected)
-		return
+		t.Fatalf("Wrong output.\nHave: %s\nNeed: %s\n", string(ans), expected)
 	}
 }

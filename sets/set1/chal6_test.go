@@ -13,34 +13,35 @@ func TestHammingDistance(t *testing.T) {
 	s2 := []byte("wokka wokka!!!")
 	dist, err := common.HammingDistance(s1, s2)
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 	expectedDist := 37
 	if dist != expectedDist {
-		t.Errorf("Wrong output.\nHave: %d\nNeed: %d\n", dist, expectedDist)
-		return
+		t.Fatalf("Wrong output.\nHave: %d\nNeed: %d\n", dist, expectedDist)
 	}
 }
 
-func TestChal6(t *testing.T) {
+func TestChal6_BreakRepeatingKeyXOR(t *testing.T) {
 	// t.Skip("skip: test is a bit long")
 
 	// read file (base64 encoded)
 	fileb64, err := os.ReadFile("../../res/set1/6.txt")
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 
 	// decode
-	ct := make([]byte, base64.StdEncoding.DecodedLen(len(fileb64)))
-	base64.StdEncoding.Decode(ct, fileb64)
+	ct, err := base64.StdEncoding.DecodeString(string(fileb64))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// decipher
 	pt, key, err := xor.RepeatingKeyXORDecipher(ct)
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
+
 	t.Log(string(pt), "\n")
 
 	expectedKey := "Terminator X: Bring the noise"
@@ -48,8 +49,7 @@ func TestChal6(t *testing.T) {
 	// key: teRmINaTORx:brINGthENOISE
 	// key: Terminator X: Bring the noise
 	if string(key) != expectedKey {
-		t.Errorf("Wrong output.\nHave: %s\nNeed: %s\n", key, expectedKey)
-		return
+		t.Fatalf("Wrong output.\nHave: %s\nNeed: %s\n", key, expectedKey)
 	}
 
 }

@@ -7,29 +7,27 @@ import (
 )
 
 func TestChal11(t *testing.T) {
-	// read file
+	size := 16
+
 	pt, err := os.ReadFile("../../res/set2/11.txt")
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 
-	const numTries = 20
-	for i := 0; i < numTries; i++ {
-		// encrypts the plaintext with ECB or CBC. 1/2 prob each
-		ct, useECB, err := aes.EncryptionOracle(pt)
+	// try this many times
+	for i := 0; i < 30; i++ {
+		// encrypts the plaintext with ECB or CBC
+		// returns the choice for testing purposes
+		ct, useECB, err := aes.OracleEncryptRandom(pt, size)
 		if err != nil {
-			t.Error(err)
-			return
+			t.Fatal(err)
 		}
-		// returns true if ciphertext is detected to be encrypted with ECB
-		detectedECB := aes.DetectionOracle(ct)
 
-		// TODO
+		// returns true if ciphertext is detected to be encrypted with ECB
+		detectedECB := aes.OracleDetect(ct, size)
+
 		if useECB != detectedECB {
-			t.Log("USED:", useECB, "\tDETECTED:", detectedECB)
-			t.Log("CT:", ct, "\tECB:", useECB)
-			t.Fail()
+			t.Fatal("USED:", useECB, "\tDETECTED:", detectedECB)
 		}
 	}
 }

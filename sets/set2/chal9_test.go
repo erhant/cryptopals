@@ -12,11 +12,11 @@ func TestChal9(t *testing.T) {
 	paddedBuf := pkcs7.Pad(buf, 20)            // pad to 20 bytes
 	unpaddedBuf, err := pkcs7.Unpad(paddedBuf) // unpad
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
+
 	if !bytes.Equal(buf, unpaddedBuf) {
-		t.Error(constants.ErrWrongResult)
+		t.Fatal(constants.ErrWrongResult)
 		return
 	}
 }

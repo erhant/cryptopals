@@ -86,13 +86,13 @@ func HammingDistance(a, b []byte) (int, error) {
 	}
 	dist := 0
 	for i := 0; i < len(a); i++ {
-		dist += NumOfSetBits(a[i] ^ b[i])
+		dist += HammingWeight(a[i] ^ b[i])
 	}
 	return dist, nil
 }
 
 // Returns the number of set bits (1) within a byte.
-func NumOfSetBits(b byte) int {
+func HammingWeight(b byte) int {
 	count := 0
 	for b != 0 {
 		if b&1 == 1 {
@@ -103,14 +103,25 @@ func NumOfSetBits(b byte) int {
 	return count
 }
 
-func RepeatingBlocks(bytes []byte, size int) int {
-	repeats := make(map[string]int)
-	s := 0
-	for bs, be := 0, size; be <= len(bytes); bs, be = bs+size, be+size {
-		repeats[string(bytes[bs:be])]++
+// Returns the number of repeating blocks of `size` bytes in a given byte array.
+//
+// This is implemented in the first place for ECB / CBC detection oracle, where due to
+// ECB's preservation of ciphertext-plaintext pairs we expect repeating blocks for
+// plaintext with repeating parts.
+func NumRepeatingBlocks(bytes []byte, size int) int {
+	repeatsPerBlock := make(map[string]int)
+
+	// count the number of repeating blocks
+	for i := 0; i < len(bytes)/size; i++ {
+		bs, be := i*size, (i+1)*size
+		repeatsPerBlock[string(bytes[bs:be])]++
 	}
-	for _, r := range repeats {
-		s += r - 1 // minus 1 to ignore single-occurences
+
+	// count total repetitions
+	score := 0
+	for _, repeats := range repeatsPerBlock {
+		// minus 1 to ignore single-occurences
+		score += repeats - 1
 	}
-	return s
+	return score
 }

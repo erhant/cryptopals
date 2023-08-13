@@ -1,21 +1,21 @@
 package set1_test
 
 import (
-	"bytes"
-	"cryptopals/pkg/b64"
+	"encoding/base64"
+	"encoding/hex"
 	"testing"
 )
 
-func TestChal1(t *testing.T) {
-	input := []byte("49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d")
-	expectedOutput := []byte("SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t")
-	output, err := b64.HexToBase64(input)
+func TestChal1_HexToBase64(t *testing.T) {
+	in, err := hex.DecodeString("49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d")
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
-	if !bytes.Equal(output, expectedOutput) {
-		t.Errorf("Wrong output.\nHave: %s\nNeed: %s\n", output, expectedOutput)
-		return
+
+	out := base64.StdEncoding.EncodeToString(in)
+
+	expected := "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
+	if out != expected {
+		t.Fatalf("Wrong output.\nHave: %s\nNeed: %s\n", out, expected)
 	}
 }

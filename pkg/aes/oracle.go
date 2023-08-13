@@ -2,68 +2,72 @@ package aes
 
 import (
 	"cryptopals/internal/common"
-	"fmt"
 )
 
-// This function creates a random 128-bit key,
-// appends & preprends some stuff to the plaintext
-// and then encrypts the entire thing. Half of the time,
-// it will use ECB mode, otherwise CBC.
-func EncryptionOracle(pt []byte) ([]byte, bool, error) {
-	const size = 16 // TODO: take parameter
-	// create random 16-byte key
+// Just like OracleEncrypt function, with the key is created randomly
+// on each function call.
+func OracleEncryptRandom(pt []byte, size int) ([]byte, bool, error) {
 	key, err := common.RandBytes(size)
 	if err != nil {
 		return nil, false, err
 	}
 
-	// prepend
+	return OracleEncrypt(pt, key, size)
+}
+
+// Appends & preprends some stuff to the plaintext,
+// and then encrypts the entire thing with the given key.
+//
+// It will flip a coin, and will encrypt based on ECB or CBC based on the result.
+//
+// Returns the ciphertext and a bool where (true: ECB) and (false: CBC).
+func OracleEncrypt(pt, key []byte, size int) ([]byte, bool, error) {
 	if prependBytes, err := common.RandBytes(common.RandInteger(5, 10)); err != nil {
 		return nil, false, err
 	} else {
 		pt = append(prependBytes, pt...)
 	}
 
-	// append
 	if appendBytes, err := common.RandBytes(common.RandInteger(5, 10)); err != nil {
 		return nil, false, err
 	} else {
 		pt = append(pt, appendBytes...)
 	}
 
-	// encrypt
-	var ct []byte
-	useECB := common.RandBool()
-	if useECB {
+	if common.RandBool() {
 		// encrypt with ECB
-		ct, err = ECBEncrypt(pt, key, 16)
+		ct, err := ECBEncrypt(pt, key, 16)
 		if err != nil {
-			return nil, false, err
+			return nil, true, err
 		}
+
+		return ct, true, err
 	} else {
 		// generate random iv
 		iv, err := common.RandBytes(size)
 		if err != nil {
 			return nil, false, err
 		}
+
 		// encrypt with CBC
-		ct, err = CBCEncrypt(pt, iv, key, 16)
+		ct, err := CBCEncrypt(pt, iv, key, 16)
 		if err != nil {
 			return nil, false, err
 		}
-	}
 
-	return ct, useECB, nil
+		return ct, false, nil
+	}
 }
 
-// Given a ciphertext, this function returns true if
-// the given ciphertext was encrypted using ECB. Returning
-// false means that ciphertext was encrypted using CBC.
-func DetectionOracle(ct []byte) bool {
-	// TODO: take parameter
-	const size = 16
-	// similar to previous challenge, try to check for repeating blocks
-	s := common.RepeatingBlocks(ct, size)
-	fmt.Println("Repeating:", s)
+// Given a ciphertext, this function returns a bool meaning:
+//
+// - true: ciphertext was encrypted using ECB.
+//
+// - false: ciphertext was encrypted using CBC.
+func OracleDetect(ct []byte, size int) bool {
+	// similar to Challenge 8, where we detected from a set of ciphertexts
+	// which one was encrypted using ECB, we check for repeating blocks again
+	s := common.NumRepeatingBlocks(ct, size)
+
 	return s > 0
 }

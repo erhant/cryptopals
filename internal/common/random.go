@@ -8,8 +8,7 @@ import (
 // Generates random bytes of the given length.
 func RandBytes(numBytes int) ([]byte, error) {
 	bytes := make([]byte, numBytes)
-	_, err := cryptoRand.Read(bytes)
-	if err != nil {
+	if _, err := cryptoRand.Read(bytes); err != nil {
 		return nil, err
 	}
 	return bytes, nil
